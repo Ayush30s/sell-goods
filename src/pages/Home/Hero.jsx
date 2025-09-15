@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const Hero = () => {
   return (
-    <section className="mx-auto px-5 py-12 mt-14 flex flex-col gap-12 max-w-7xl">
+    <section className="mx-auto py-5 flex flex-col gap-12 max-w-7xl">
       <div className="grid md:grid-cols-3 gap-6">
         {/* Left Big Card */}
         <div className="col-span-2 bg-gradient-to-br from-pink-50 via-yellow-50 to-green-50 rounded-lg p-8 flex flex-col md:flex-row items-center gap-6">

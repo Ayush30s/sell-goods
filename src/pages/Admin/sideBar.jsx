@@ -74,19 +74,22 @@ export default function Sidebar() {
       {/* Navigation */}
       <nav className="flex flex-col space-y-2 mb-6">
         {/* Sidebar Home Link */}
-        <NavLink
-          to="/"
-          className={({ isActive }) =>
-            `flex items-center gap-3 py-3 border-2 border-green-500 bg-green-300 px-4 rounded-full transition font-medium text-sm ${
-              isActive
-                ? "bg-green-200 text-gray-700 shadow-sm"
-                : "text-gray-700 hover:bg-gray-100"
-            }`
-          }
-        >
-          <ArrowLeft className="h-5 w-5 group-hover:scale-110 transition-transform" />
-          Admin Dashboard
-        </NavLink>
+        <div className="flex items-center gap-3 border-2 py-1.5 px-2 rounded-full bg-green-200 transition font-medium text-sm border-green-500 text-gray-700">
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              `w-8 h-8 flex items-center justify-center p-2 border  border-green-500 rounded-full transition ${
+                isActive
+                  ? "bg-white text-green-700 shadow-sm"
+                  : "bg-white text-gray-700 hover:bg-green-300"
+              }`
+            }
+          >
+            <ArrowLeft className="w-5 h-5 font-bold" />
+          </NavLink>
+
+          <span className="text-2xl font-bold">Dashboard</span>
+        </div>
 
         {sidebarItems.map((item) => {
           const Icon = item.icon;

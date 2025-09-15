@@ -79,7 +79,6 @@ export default function RegisterAdminPage() {
 
   return (
     <>
-      <Navbar />
       <div className="min-h-screen pt-28 pb-10 flex items-center justify-center px-4">
         <div className="w-full max-w-6xl bg-white rounded-sm shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2">
           {/* Left: Form */}

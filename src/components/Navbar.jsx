@@ -54,8 +54,8 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white shadow-md transition-all duration-300">
-      <nav className="container mx-auto px-5 py-4 flex justify-between items-center">
+    <header className="sticky top-0 w-full z-50 bg-white border-b transition-all duration-300">
+      <nav className="container mx-auto px-5 py-3 flex justify-between items-center">
         {/* Logo */}
         <Link
           className="text-2xl font-bold text-green-600 tracking-tight"
@@ -158,7 +158,7 @@ const Navbar = () => {
             onMouseLeave={() => setShowUserMenu(false)}
           >
             <div className="flex items-center gap-2 cursor-pointer">
-              <span className="text-gray-700 bg-green-200 py-2 px-3 rounded-full font-medium truncate max-w-[120px]">
+              <span className="text-gray-700 bg-green-300 py-2 px-3 rounded-full font-medium truncate max-w-[120px]">
                 {user ? (
                   <div className="flex flex-row gap-2">
                     <FaUserCircle size={28} className="text-gray-700" />
@@ -206,13 +206,13 @@ const Navbar = () => {
                   <div className="flex flex-col mt-0 rounded-sm">
                     <Link
                       to="/login"
-                      className="px-4 py-3 text-gray-800 hover:bg-green-300 transition text-center"
+                      className="px-4 py-3 text-gray-800 hover:bg-gray-100 transition text-center"
                     >
                       Login
                     </Link>
                     <Link
                       to="/register"
-                      className="px-4 py-3 text-gray-800 hover:bg-green-300 transition text-center"
+                      className="px-4 py-3 text-gray-800 hover:bg-gray-100 transition text-center"
                     >
                       Register
                     </Link>

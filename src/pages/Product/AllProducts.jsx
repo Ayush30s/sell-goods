@@ -104,8 +104,7 @@ const AllProducts = () => {
 
   return (
     <>
-      <Navbar />
-      <section className="container mx-auto mt-24 px-5">
+      <section className="container mx-auto mt-5 px-5">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-bold text-gray-800">All Products</h1>
           {/* Toggle Filter Button */}

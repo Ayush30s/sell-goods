@@ -22,6 +22,7 @@ import Orders from "./pages/Admin/orders.jsx";
 import Revenue from "./pages/Admin/revenue.jsx";
 import MostSoldProducts from "./pages/Admin/mostSoldproducts.jsx";
 import ProtectedRoute from "./guards/roleProtectedRoute.jsx";
+import Register from "./pages/auth/RegisterPage.jsx";
 
 // Router
 const appRouter = createBrowserRouter([
@@ -29,89 +30,109 @@ const appRouter = createBrowserRouter([
     path: "/",
     element: (
       <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
-        <Home />
-      </Suspense>
-    ),
-  },
-  {
-    path: "/login",
-    element: (
-      <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
-        <Login />
-      </Suspense>
-    ),
-  },
-  {
-    path: "/register",
-    element: (
-      <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
         <App />
       </Suspense>
     ),
-  },
-  {
-    path: "/register-customer",
-    element: (
-      <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
-        <RegisterCustomerPage />
-      </Suspense>
-    ),
-  },
-  {
-    path: "/register-admin",
-    element: (
-      <Suspense fallback={<div className="text-center mt-10">Loading...</div>}>
-        <RegsiterAdminPage />
-      </Suspense>
-    ),
-  },
-  {
-    path: "/products",
-    element: (
-      <ProtectedRoute allowedRoles={["customer", "admin",""]}>
-        <Suspense
-          fallback={<div className="text-center mt-10">Loading...</div>}
-        >
-          <AllProducts />
-        </Suspense>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/products/:id",
-    element: (
-      <ProtectedRoute allowedRoles={["customer", "admin"]}>
-        <Suspense
-          fallback={<div className="text-center mt-10">Loading...</div>}
-        >
-          <ProductDetails />
-        </Suspense>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/add-product",
-    element: (
-      <ProtectedRoute allowedRoles={["admin"]}>
-        <Suspense
-          fallback={<div className="text-center mt-10">Loading...</div>}
-        >
-          <AddProductForm />
-        </Suspense>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/cart",
-    element: (
-      <ProtectedRoute allowedRoles={["customer"]}>
-        <Suspense
-          fallback={<div className="text-center mt-10">Loading...</div>}
-        >
-          <Cart />
-        </Suspense>
-      </ProtectedRoute>
-    ),
+    children: [
+      {
+        path: "/",
+        element: (
+          <Suspense
+            fallback={<div className="text-center mt-10">Loading...</div>}
+          >
+            <Home />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/login",
+        element: (
+          <Suspense
+            fallback={<div className="text-center mt-10">Loading...</div>}
+          >
+            <Login />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/register",
+        element: (
+          <Suspense
+            fallback={<div className="text-center mt-10">Loading...</div>}
+          >
+            <Register />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/register-customer",
+        element: (
+          <Suspense
+            fallback={<div className="text-center mt-10">Loading...</div>}
+          >
+            <RegisterCustomerPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/register-admin",
+        element: (
+          <Suspense
+            fallback={<div className="text-center mt-10">Loading...</div>}
+          >
+            <RegsiterAdminPage />
+          </Suspense>
+        ),
+      },
+      {
+        path: "/products",
+        element: (
+          <ProtectedRoute allowedRoles={["customer", "admin", ""]}>
+            <Suspense
+              fallback={<div className="text-center mt-10">Loading...</div>}
+            >
+              <AllProducts />
+            </Suspense>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/products/:id",
+        element: (
+          <ProtectedRoute allowedRoles={["customer", "admin"]}>
+            <Suspense
+              fallback={<div className="text-center mt-10">Loading...</div>}
+            >
+              <ProductDetails />
+            </Suspense>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/add-product",
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <Suspense
+              fallback={<div className="text-center mt-10">Loading...</div>}
+            >
+              <AddProductForm />
+            </Suspense>
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/cart",
+        element: (
+          <ProtectedRoute allowedRoles={["customer"]}>
+            <Suspense
+              fallback={<div className="text-center mt-10">Loading...</div>}
+            >
+              <Cart />
+            </Suspense>
+          </ProtectedRoute>
+        ),
+      },
+    ],
   },
   {
     path: "/admin-dashboard",

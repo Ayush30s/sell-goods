@@ -106,7 +106,6 @@ const ProductDetails = () => {
 
   return (
     <>
-      <Navbar />
       <section className="min-h-screen bg-gray-100 mt-10">
         <div className="container mx-auto px-4 md:px-8 py-12">
           {/* Breadcrumb */}
