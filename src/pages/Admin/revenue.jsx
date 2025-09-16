@@ -196,7 +196,7 @@ export default function Revenue() {
       </div>
 
       {/* Chart */}
-      <div className="flex-1 border border-gray-500 p-2" style={{ height: `${chartHeight}px` }}>
+      <div className="flex-1" style={{ height: `${chartHeight}px` }}>
         <Bar data={data} options={options} />
       </div>
     </div>
