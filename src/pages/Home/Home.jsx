@@ -7,13 +7,13 @@ import Footer from "../../components/Footer";
 
 const Home = () => {
   return (
-    <>
+    <div className="mx-auto max-w-7xl ">
       <Hero />
       <CategoriesMarquee />
       <BestSellingProducts />
       <LatestProducts />
       <Footer />
-    </>
+    </div>
   );
 };
 

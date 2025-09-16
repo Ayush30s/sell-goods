@@ -7,10 +7,13 @@ import { LoginThunk } from "../../store/thunk/auth-management";
 import Navbar from "../../components/Navbar";
 
 const Login = () => {
+  const globalData = useSelector((store) => store.global);
+  const isDarkMode = globalData.theme;
+
   const initialData = {
     email: "ayush@gmail.com",
     password: "1234",
-    role: "customer", // default role
+    role: "customer",
   };
 
   const [formData, setFormData] = useState(initialData);
@@ -30,24 +33,35 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
     dispatch(LoginThunk(formData, navigate));
-    navigate("/"); // you may want to navigate based on role later
+    navigate("/");
   };
 
   return (
     <>
-      <div className="min-h-screen pt-28 pb-10 flex items-center justify-center px-4">
-        <div className="w-full max-w-5xl bg-white rounded-sm shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+      <div
+        className={`min-h-screen flex items-center justify-center px-4 transition-colors duration-300 ${
+          isDarkMode ? "bg-gray-900" : "bg-white"
+        }`}
+      >
+        <div
+          className={`w-full max-w-5xl rounded-sm shadow-lg overflow-hidden grid grid-cols-1 lg:grid-cols-2 transition-colors duration-300 ${
+            isDarkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
+          }`}
+        >
           {/* Left: Login Form */}
           <div className="flex items-center justify-center p-8">
             <div className="w-full max-w-md">
               {/* Header */}
               <div className="text-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  Welcome Back!
-                </h1>
-                <p className="text-gray-500">Sign in to your account</p>
+                <h1 className="text-3xl font-bold mb-2">Welcome Back!</h1>
+                <p
+                  className={`text-sm ${
+                    isDarkMode ? "text-gray-300" : "text-gray-500"
+                  }`}
+                >
+                  Sign in to your account
+                </p>
               </div>
 
               {/* Form */}
@@ -61,7 +75,11 @@ const Login = () => {
                     type="email"
                     placeholder="Enter your email"
                     name="email"
-                    className="w-full pl-10 pr-4 py-3 bg-white border border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                    className={`w-full pl-10 pr-4 py-3 border rounded-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-300 ${
+                      isDarkMode
+                        ? "bg-gray-700 border-gray-600 text-gray-100"
+                        : "bg-white border-gray-300 text-gray-900"
+                    }`}
                     value={formData.email}
                     onChange={handleChange}
                     required
@@ -78,7 +96,11 @@ const Login = () => {
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
                     name="password"
-                    className="w-full pl-10 pr-12 py-3 bg-white border border-gray-300 rounded-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                    className={`w-full pl-10 pr-12 py-3 border rounded-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-300 ${
+                      isDarkMode
+                        ? "bg-gray-700 border-gray-600 text-gray-100"
+                        : "bg-white border-gray-300 text-gray-900"
+                    }`}
                     value={formData.password}
                     onChange={handleChange}
                     required
@@ -103,7 +125,11 @@ const Login = () => {
                     name="role"
                     value={formData.role}
                     onChange={handleChange}
-                    className="w-full py-3 px-3 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    className={`w-full py-3 px-3 border rounded-sm focus:outline-none focus:ring-2 focus:ring-purple-500 transition-colors duration-300 ${
+                      isDarkMode
+                        ? "bg-gray-700 border-gray-600 text-gray-100"
+                        : "bg-white border-gray-300 text-gray-900"
+                    }`}
                   >
                     <option value="customer">Customer</option>
                     <option value="admin">Admin</option>
@@ -132,13 +158,23 @@ const Login = () => {
               {/* Divider */}
               <div className="my-6 flex items-center">
                 <div className="flex-1 border-t border-gray-200"></div>
-                <span className="px-4 text-gray-400 text-sm">or</span>
+                <span
+                  className={`px-4 text-sm ${
+                    isDarkMode ? "text-gray-400" : "text-gray-400"
+                  }`}
+                >
+                  or
+                </span>
                 <div className="flex-1 border-t border-gray-200"></div>
               </div>
 
               {/* Register Link */}
               <div className="text-center">
-                <p className="text-gray-600">
+                <p
+                  className={`${
+                    isDarkMode ? "text-gray-300" : "text-gray-600"
+                  }`}
+                >
                   Don't have an account?{" "}
                   <button
                     className="text-blue-600 hover:text-blue-800 font-semibold transition hover:underline"

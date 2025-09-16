@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { categories as rawCategories } from "../../utils/Rawdata";
+import { useSelector } from "react-redux";
 
 const FilterBar = ({ applyFilters }) => {
+  const globalData = useSelector((store) => store.global);
+  const isDarkMode = globalData.theme;
+
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedSubcategory, setSelectedSubcategory] = useState("");
   const [priceRange, setPriceRange] = useState([0, 1000]);
@@ -34,15 +38,24 @@ const FilterBar = ({ applyFilters }) => {
     applyFilters({});
   };
 
+  const baseInputClasses = `w-full text-base px-4 py-2 rounded-sm border focus:ring-2 focus:ring-green-400 focus:border-green-400 transition`;
+  const themedInputClasses = isDarkMode
+    ? "bg-gray-800 border-gray-600 text-gray-200 placeholder-gray-400"
+    : "bg-white border-gray-300 text-gray-800 placeholder-gray-500";
+
   return (
-    <div className="bg-[#F5F5F5] rounded-sm p-6 mb-8 mx-auto">
+    <div
+      className={`shadow-sm shadow-gray-800 rounded-sm p-6 mb-8 mx-auto transition-colors duration-300 ${
+        isDarkMode ? "bg-gray-900 text-gray-200" : "bg-white text-gray-800"
+      }`}
+    >
       <form onSubmit={handleApply} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Category */}
           <div>
             <label
               htmlFor="category"
-              className="block text-base font-medium text-gray-700 mb-2"
+              className="block text-base font-medium mb-2"
             >
               Category
             </label>
@@ -54,7 +67,7 @@ const FilterBar = ({ applyFilters }) => {
                 setSelectedCategory(e.target.value);
                 setSelectedSubcategory("");
               }}
-              className="w-full text-base px-4 py-2 rounded-sm border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-400 focus:border-green-400"
+              className={`${baseInputClasses} ${themedInputClasses}`}
             >
               <option value="">Select Category</option>
               {rawCategories.map((cat) => (
@@ -69,7 +82,7 @@ const FilterBar = ({ applyFilters }) => {
           <div>
             <label
               htmlFor="subcategory"
-              className="block text-base font-medium text-gray-700 mb-2"
+              className="block text-base font-medium mb-2"
             >
               Subcategory
             </label>
@@ -79,7 +92,7 @@ const FilterBar = ({ applyFilters }) => {
               value={selectedSubcategory}
               onChange={(e) => setSelectedSubcategory(e.target.value)}
               disabled={!selectedCategory}
-              className="w-full text-base px-4 py-2 rounded-sm border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-400 focus:border-green-400"
+              className={`${baseInputClasses} ${themedInputClasses}`}
             >
               <option value="">Select Subcategory</option>
               {selectedCategory &&
@@ -97,7 +110,7 @@ const FilterBar = ({ applyFilters }) => {
           <div>
             <label
               htmlFor="minPrice"
-              className="block text-base font-medium text-gray-700 mb-2"
+              className="block text-base font-medium mb-2"
             >
               Min Price ($)
             </label>
@@ -109,7 +122,7 @@ const FilterBar = ({ applyFilters }) => {
                 setPriceRange([Number(e.target.value), priceRange[1]])
               }
               min="0"
-              className="w-full text-base px-4 py-2 rounded-sm border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-400 focus:border-green-400"
+              className={`${baseInputClasses} ${themedInputClasses}`}
               placeholder="0"
             />
           </div>
@@ -118,7 +131,7 @@ const FilterBar = ({ applyFilters }) => {
           <div>
             <label
               htmlFor="maxPrice"
-              className="block text-base font-medium text-gray-700 mb-2"
+              className="block text-base font-medium mb-2"
             >
               Max Price ($)
             </label>
@@ -130,7 +143,7 @@ const FilterBar = ({ applyFilters }) => {
                 setPriceRange([priceRange[0], Number(e.target.value)])
               }
               min="0"
-              className="w-full text-base px-4 py-2 rounded-sm border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-400 focus:border-green-400"
+              className={`${baseInputClasses} ${themedInputClasses}`}
               placeholder="1000"
             />
           </div>
@@ -139,7 +152,7 @@ const FilterBar = ({ applyFilters }) => {
           <div>
             <label
               htmlFor="discount"
-              className="block text-base font-medium text-gray-700 mb-2"
+              className="block text-base font-medium mb-2"
             >
               Discount
             </label>
@@ -147,7 +160,7 @@ const FilterBar = ({ applyFilters }) => {
               id="discount"
               value={discount}
               onChange={(e) => setDiscount(e.target.value)}
-              className="w-full text-base px-4 py-2 rounded-sm border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-400 focus:border-green-400"
+              className={`${baseInputClasses} ${themedInputClasses}`}
             >
               <option value="">Any</option>
               <option value="10">10%+</option>
@@ -161,7 +174,7 @@ const FilterBar = ({ applyFilters }) => {
           <div>
             <label
               htmlFor="rating"
-              className="block text-base font-medium text-gray-700 mb-2"
+              className="block text-base font-medium mb-2"
             >
               Rating
             </label>
@@ -169,7 +182,7 @@ const FilterBar = ({ applyFilters }) => {
               id="rating"
               value={rating}
               onChange={(e) => setRating(e.target.value)}
-              className="w-full text-base px-4 py-2 rounded-sm border border-gray-300 bg-white text-gray-800 focus:ring-2 focus:ring-green-400 focus:border-green-400"
+              className={`${baseInputClasses} ${themedInputClasses}`}
             >
               <option value="">Any</option>
               <option value="1">1⭐+</option>
@@ -189,7 +202,7 @@ const FilterBar = ({ applyFilters }) => {
               className="accent-green-500 h-4 w-4"
               id="freeShipping"
             />
-            <label htmlFor="freeShipping" className="text-gray-700 text-base">
+            <label htmlFor="freeShipping" className="text-base">
               Free Shipping
             </label>
           </div>
@@ -203,7 +216,7 @@ const FilterBar = ({ applyFilters }) => {
               className="accent-green-500 h-4 w-4"
               id="returnable"
             />
-            <label htmlFor="returnable" className="text-gray-700 text-base">
+            <label htmlFor="returnable" className="text-base">
               Returnable
             </label>
           </div>
@@ -220,7 +233,11 @@ const FilterBar = ({ applyFilters }) => {
           <button
             type="button"
             onClick={handleReset}
-            className="px-6 py-3 text-base bg-gray-200 text-gray-800 rounded-sm hover:bg-gray-300 transition duration-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+            className={`px-6 py-3 text-base rounded-sm transition duration-300 focus:outline-none focus:ring-2 ${
+              isDarkMode
+                ? "bg-gray-700 text-gray-200 hover:bg-gray-600 focus:ring-gray-500"
+                : "bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400"
+            }`}
           >
             Reset Filters
           </button>

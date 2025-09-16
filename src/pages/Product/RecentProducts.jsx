@@ -3,10 +3,15 @@ import Loader from "../../components/Loader";
 import Product from "./ProductCard";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const LatestProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Fetch theme from Redux
+  const globalData = useSelector((store) => store.global);
+  const isDarkMode = globalData.theme;
 
   const fetchProducts = async () => {
     try {
@@ -15,9 +20,9 @@ const LatestProducts = () => {
         `https://dummyjson.com/products?limit=8&sortBy=createdAt&order=desc`
       );
       const data = await res.json();
-      // Fallback: if API doesn’t support sorting, just take latest by ID
+      // Fallback: if API doesn’t support sorting, sort by ID
       const sorted = data.products.sort((a, b) => b.id - a.id);
-      setProducts(sorted.slice(0, 8));
+      setProducts(sorted.slice(0, 10));
     } catch (error) {
       console.error("Error fetching recent products:", error);
     } finally {
@@ -33,37 +38,51 @@ const LatestProducts = () => {
 
   if (products.length === 0) {
     return (
-      <p className="text-center text-gray-600 py-10">
+      <p
+        className={`text-center py-10 ${
+          isDarkMode ? "text-gray-300" : "text-gray-600"
+        }`}
+      >
         No recent products found. Please connect to the internet.
       </p>
     );
   }
 
   return (
-    <section className="relative container mx-auto max-w-7xl px-5 my-20">
+    <section
+      className={`relative container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 my-20 transition-colors duration-500 ${
+        isDarkMode ? "text-gray-200" : "text-gray-800"
+      }`}
+    >
       {/* Section Title */}
       <div className="text-center mb-10">
-        <h2 className="text-3xl font-bold">
+        <h2 className={`text-3xl font-bold`}>
           Most <span className="text-green-600">Recent</span> Products
         </h2>
-        <p className="text-gray-600 mt-2">
+        <p className={`mt-2 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
           Check out the latest arrivals in our store
         </p>
       </div>
 
-      <Link
-        to="/products"
-        state={{ from: "homepage", promo: true, tab: "Latest" }}
-      >
-        <button className="absolute right-16 top-24 text-gray-600 flex flex-row justify-center align-middle items-center">
-          <span className="px-1 text-xs hover:font-bold">View More</span>{" "}
-          <ArrowRight size={12} />
-        </button>
-      </Link>
+      {/* "View More" button */}
+      <div className="flex justify-end">
+        <Link
+          to="/products"
+          state={{ from: "homepage", promo: true, tab: "Latest" }}
+        >
+          <button
+            className={`flex items-center text-sm px-2 py-1 rounded hover:underline transition ${
+              isDarkMode ? "text-gray-300" : "text-gray-700"
+            }`}
+          >
+            View More <ArrowRight size={14} className="ml-1" />
+          </button>
+        </Link>
+      </div>
 
       {/* Products Grid */}
-      <div className="flex justify-evenly flex-wrap gap-6 mt-6">
-        {products.slice(0, 4).map((product) => (
+      <div className="flex flex-row justify-between overflow-auto gap-12">
+        {products.map((product) => (
           <Link key={product.id} to={`/products/${product.id}`}>
             <Product product={product} />
           </Link>

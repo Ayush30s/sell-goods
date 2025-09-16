@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { CiLight, CiDark, CiMenuBurger } from "react-icons/ci";
@@ -26,6 +26,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showProductMenu, setShowProductMenu] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -40,7 +41,12 @@ const Navbar = () => {
 
   const handleThemeChange = () => dispatch(chnageTheme());
 
-  // Navigation links
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   const navLinks = [{ name: "Home", path: "/" }];
   if (user?.role === "admin")
     navLinks.push({ name: "Dashboard", path: "/admin-dashboard" });
@@ -54,26 +60,33 @@ const Navbar = () => {
   ];
 
   return (
-    <header className="sticky top-0 w-full z-50 bg-white border-b transition-all duration-300">
+    <header
+      className={`sticky top-0 border-b border-gray-500 w-full z-50 transition-all duration-300 ${
+        isDarkMode ? "bg-gray-900 text-gray-100" : "bg-white text-gray-900"
+      } ${scrolled ? "shadow-md" : ""}`}
+    >
       <nav className="container mx-auto px-5 py-3 flex justify-between items-center">
         {/* Logo */}
         <Link
           className="text-2xl font-bold text-green-600 tracking-tight"
           to="/"
         >
-          Only<span className="text-gray-800">Cart</span>
+          Only
+          <span className={`${isDarkMode ? "text-gray-100" : "text-gray-800"}`}>
+            Cart
+          </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-10 relative">
+        <div className="hidden md:flex items-center gap-6 relative">
           {navLinks.map((link, i) => (
             <Link
               key={i}
               to={link.path}
-              className={`font-medium transition-all duration-200 ${
+              className={`px-3 py-2 rounded-md font-medium transition-colors duration-300 ${
                 location.pathname === link.path
-                  ? "text-green-600 underline underline-offset-4"
-                  : "text-gray-700 hover:text-green-600"
+                  ? "font-bold text-green-600 underline underline-offset-4"
+                  : "hover:text-green-600"
               }`}
             >
               {link.name}
@@ -87,32 +100,41 @@ const Navbar = () => {
             onMouseLeave={() => setShowProductMenu(false)}
           >
             <span
-              className={`font-medium cursor-pointer transition-all duration-200 ${
+              className={`px-3 py-2 rounded-md font-medium cursor-pointer transition-colors duration-300 ${
                 location.pathname.startsWith("/products")
-                  ? "text-green-600 underline underline-offset-4"
-                  : "text-gray-700 hover:text-green-600"
+                  ? "font-bold text-green-600 underline underline-offset-4"
+                  : "hover:text-green-600"
               }`}
             >
               Products
             </span>
 
             {showProductMenu && (
-              <div className="absolute top-full left-0 mt-0 w-52 bg-white border rounded-sm shadow-lg z-50">
+              <div
+                className={`absolute top-full left-0 mt-2 w-56 rounded-md shadow-lg ${
+                  isDarkMode ? "bg-gray-800" : "bg-white"
+                }`}
+              >
                 <Link
                   to="/products"
-                  className="px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition"
+                  className="px-4 py-3 text-sm flex items-center hover:text-green-600"
                 >
                   <HiOutlineViewGrid className="mr-2" /> All Products
                 </Link>
-                <Link
-                  to="/add-product"
-                  className="px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition"
-                >
-                  <HiOutlinePlusCircle className="mr-2" /> Add Product
-                </Link>
+
+                {/* Add Product only for admin */}
+                {user?.role === "admin" && (
+                  <Link
+                    to="/add-product"
+                    className="px-4 py-3 text-sm flex items-center hover:text-green-600"
+                  >
+                    <HiOutlinePlusCircle className="mr-2" /> Add Product
+                  </Link>
+                )}
+
                 <Link
                   to="/my-products"
-                  className="px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition"
+                  className="px-4 py-3 text-sm flex items-center hover:text-green-600"
                 >
                   <HiOutlineViewGrid className="mr-2" /> My Products
                 </Link>
@@ -120,14 +142,18 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Cart (only for non-admin users) */}
+          {/* Cart */}
           {user?.role !== "admin" && (
             <Link
               to="/cart"
-              className="relative flex items-center gap-2 bg-green-300 px-3 py-2 rounded-full transition hover:bg-green-400"
+              className={`relative flex items-center gap-2 px-3 py-2 rounded-md font-medium ${
+                location.pathname === "/cart"
+                  ? "font-bold text-green-600 underline underline-offset-4"
+                  : "hover:text-green-600"
+              }`}
             >
-              <span className="text-gray-700 font-medium">Cart</span>
-              <HiOutlineShoppingCart size={22} className="text-gray-700" />
+              <span>Cart</span>
+              <HiOutlineShoppingCart size={20} />
               {cartItems.length > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold rounded-full px-1.5">
                   {cartItems.length}
@@ -141,13 +167,15 @@ const Navbar = () => {
         <div className="flex items-center gap-3 relative">
           {/* Theme Toggle */}
           <button
-            className="p-1 rounded-full bg-slate-100 transition hover:bg-slate-200"
+            className={`p-2 rounded-full border border-gray-400 transition-colors duration-300  ${
+              isDarkMode ? "hover:bg-gray-600" : "hover:bg-gray-100"
+            }`}
             onClick={handleThemeChange}
           >
             {isDarkMode ? (
-              <CiLight size={22} className="text-yellow-400" />
+              <CiLight size={20} className="text-yellow-400" />
             ) : (
-              <CiDark size={22} className="text-gray-700" />
+              <CiDark size={20} className="text-gray-400" />
             )}
           </button>
 
@@ -157,37 +185,33 @@ const Navbar = () => {
             onMouseEnter={() => setShowUserMenu(true)}
             onMouseLeave={() => setShowUserMenu(false)}
           >
-            <div className="flex items-center gap-2 cursor-pointer">
-              <span className="text-gray-700 bg-green-300 py-2 px-3 rounded-full font-medium truncate max-w-[120px]">
-                {user ? (
-                  <div className="flex flex-row gap-2">
-                    <FaUserCircle size={28} className="text-gray-700" />
-                    <span>
-                      {user?.email.slice(0, user?.email.indexOf("@")) ||
-                        user?.name}
-                    </span>
-                  </div>
-                ) : (
-                  "Menu"
-                )}
+            <div className="flex items-center border border-gray-400 gap-2 cursor-pointer px-3 py-2 rounded-full hover:text-green-600">
+              <FaUserCircle size={22} />
+              <span className="font-medium truncate max-w-[120px]">
+                {user
+                  ? user?.email.slice(0, user?.email.indexOf("@")) || user?.name
+                  : "Menu"}
               </span>
             </div>
 
             {showUserMenu && (
-              <div className="absolute top-full right-0 mt-1 w-52 bg-white border rounded-sm shadow-lg flex flex-col z-50">
+              <div
+                className={`absolute top-full right-0 mt-2 w-56 rounded-md shadow-lg ${
+                  isDarkMode ? "bg-gray-800" : "bg-white"
+                }`}
+              >
                 {user && (
-                  <div className="px-4 py-3 border-b text-gray-700 text-sm font-medium">
+                  <div className="px-4 py-3 border-b text-sm font-medium">
                     {user?.email}
                   </div>
                 )}
-
                 {user &&
                   userLinks.map((link, i) =>
                     link.action ? (
                       <button
                         key={i}
                         onClick={link.action}
-                        className="px-4 py-3 text-sm text-red-600 hover:bg-red-100 flex items-center transition"
+                        className="w-full text-left px-4 py-3 text-sm flex items-center hover:text-green-600"
                       >
                         {link.icon} {link.name}
                       </button>
@@ -195,103 +219,149 @@ const Navbar = () => {
                       <Link
                         key={i}
                         to={link.path}
-                        className="px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition"
+                        className="px-4 py-3 text-sm flex items-center hover:text-green-600"
                       >
                         {link.icon} {link.name}
                       </Link>
                     )
                   )}
-
-                {!user && (
-                  <div className="flex flex-col mt-0 rounded-sm">
-                    <Link
-                      to="/login"
-                      className="px-4 py-3 text-gray-800 hover:bg-gray-100 transition text-center"
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      to="/register"
-                      className="px-4 py-3 text-gray-800 hover:bg-gray-100 transition text-center"
-                    >
-                      Register
-                    </Link>
-                  </div>
-                )}
               </div>
             )}
           </div>
 
           {/* Mobile Hamburger */}
           <button
-            className="md:hidden text-gray-600 hover:text-green-600 transition"
+            className="md:hidden p-2 rounded-md transition"
             onClick={() => setIsOpen(!isOpen)}
           >
-            <CiMenuBurger size={28} />
+            <CiMenuBurger size={24} />
           </button>
         </div>
+      </nav>
 
-        {/* Mobile Menu */}
-        {isOpen && (
-          <div className="absolute top-14 left-0 w-full bg-white shadow-md flex flex-col md:hidden rounded-b-xl p-4 gap-2 z-50">
-            {navLinks.map((link, i) => (
-              <Link
-                key={i}
-                to={link.path}
-                className={`px-4 py-2 rounded-xl transition font-medium ${
-                  location.pathname === link.path
-                    ? "text-green-600 bg-green-100"
-                    : "hover:bg-gray-100"
-                }`}
-                onClick={() => setIsOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
+      {/* Mobile Menu */}
+      {isOpen && (
+        <div
+          className={`md:hidden flex flex-col gap-2 px-5 py-4 ${
+            isDarkMode ? "bg-gray-900 text-gray-100" : "bg-white"
+          }`}
+        >
+          {navLinks.map((link, i) => (
+            <Link
+              key={i}
+              to={link.path}
+              className={`px-4 py-2 rounded-md transition-colors duration-300 ${
+                location.pathname === link.path
+                  ? "font-bold text-green-600 underline underline-offset-4"
+                  : "hover:text-green-600"
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              {link.name}
+            </Link>
+          ))}
 
-            <div className="flex flex-col">
-              <span className="px-4 font-medium text-gray-700">Products</span>
-              <Link
-                to="/products"
-                className="px-6 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center rounded-md"
-                onClick={() => setIsOpen(false)}
-              >
-                <HiOutlineViewGrid className="mr-2" /> All Products
-              </Link>
+          {/* Products */}
+          <div className="flex flex-col">
+            <span className="px-4 font-medium">Products</span>
+            <Link
+              to="/products"
+              className="px-6 py-2 text-sm flex items-center hover:text-green-600"
+              onClick={() => setIsOpen(false)}
+            >
+              <HiOutlineViewGrid className="mr-2" /> All Products
+            </Link>
+            {user?.role === "admin" && (
               <Link
                 to="/add-product"
-                className="px-6 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center rounded-md"
+                className="px-6 py-2 text-sm flex items-center hover:text-green-600"
                 onClick={() => setIsOpen(false)}
               >
                 <HiOutlinePlusCircle className="mr-2" /> Add Product
               </Link>
-              <Link
-                to="/my-products"
-                className="px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition"
-              >
-                <HiOutlineViewGrid className="mr-2" /> My Products
-              </Link>
-            </div>
+            )}
+            <Link
+              to="/my-products"
+              className="px-6 py-2 text-sm flex items-center hover:text-green-600"
+              onClick={() => setIsOpen(false)}
+            >
+              <HiOutlineViewGrid className="mr-2" /> My Products
+            </Link>
+          </div>
 
-            {/* Cart (hidden for admin) */}
-            {user?.role !== "admin" && (
-              <Link
-                to="/cart"
-                className="relative flex items-center gap-2 bg-green-300 px-3 py-2 rounded-full transition hover:bg-green-400"
-                onClick={() => setIsOpen(false)}
-              >
-                <span className="text-gray-700 font-medium">Cart</span>
-                <HiOutlineShoppingCart size={22} className="text-gray-700" />
-                {cartItems.length > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-semibold rounded-full px-1.5">
-                    {cartItems.length}
-                  </span>
+          {/* Cart */}
+          {user?.role !== "admin" && (
+            <Link
+              to="/cart"
+              className={`relative flex items-center gap-2 px-3 py-2 rounded-md ${
+                location.pathname === "/cart"
+                  ? "font-bold text-green-600 underline underline-offset-4"
+                  : "hover:text-green-600"
+              }`}
+              onClick={() => setIsOpen(false)}
+            >
+              <span>Cart</span>
+              <HiOutlineShoppingCart size={20} />
+              {cartItems.length > 0 && (
+                <span className="absolute left-20 bg-red-500 text-white text-xs font-semibold rounded-full px-1.5">
+                  {cartItems.length}
+                </span>
+              )}
+            </Link>
+          )}
+
+          {/* Mobile User */}
+          <div className="flex flex-col mt-2 border-t pt-2">
+            {user ? (
+              <>
+                <span className="px-4 py-2 text-sm font-medium">
+                  {user?.email}
+                </span>
+                {userLinks.map((link, i) =>
+                  link.action ? (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        link.action();
+                        setIsOpen(false);
+                      }}
+                      className="px-4 py-2 text-sm flex items-center text-red-600 hover:text-green-600"
+                    >
+                      {link.icon} {link.name}
+                    </button>
+                  ) : (
+                    <Link
+                      key={i}
+                      to={link.path}
+                      className="px-4 py-2 text-sm flex items-center hover:text-green-600"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {link.icon} {link.name}
+                    </Link>
+                  )
                 )}
-              </Link>
+              </>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-sm hover:text-green-600"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  className="px-4 py-2 text-sm hover:text-green-600"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Register
+                </Link>
+              </>
             )}
           </div>
-        )}
-      </nav>
+        </div>
+      )}
     </header>
   );
 };

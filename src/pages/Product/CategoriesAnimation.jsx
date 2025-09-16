@@ -1,9 +1,17 @@
 import { categoriesAnimation } from "../../utils/Rawdata";
+import { useSelector } from "react-redux";
 
 const CategoriesMarquee = () => {
+  const globalData = useSelector((store) => store.global);
+  const isDarkMode = globalData.theme;
+
   return (
-    <div className="w-full overflow-hidden bg-white py-4 relative container mx-auto max-w-7xl">
-      <div className="flex gap-4 animate-marquee whitespace-nowrap">
+    <div
+      className={`w-full overflow-hidden relative container mx-auto max-w-7xl py-3 sm:py-4 transition-colors duration-500 ${
+        isDarkMode ? "bg-gray-900" : "bg-white"
+      }`}
+    >
+      <div className="flex gap-3 sm:gap-4 animate-marquee whitespace-nowrap">
         {/* repeat multiple times for smooth infinite loop */}
         {[
           ...categoriesAnimation,
@@ -12,7 +20,11 @@ const CategoriesMarquee = () => {
         ].map((cat, i) => (
           <span
             key={i}
-            className="px-4 py-2 bg-gray-100 rounded-md font-medium text-gray-700 hover:bg-green-100 hover:text-green-600 cursor-pointer transition"
+            className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-md font-medium cursor-pointer transition text-sm sm:text-base ${
+              isDarkMode
+                ? "bg-gray-800 text-gray-200 hover:bg-green-700 hover:text-white"
+                : "bg-gray-100 text-gray-700 hover:bg-green-100 hover:text-green-600"
+            }`}
           >
             {cat}
           </span>
@@ -20,10 +32,22 @@ const CategoriesMarquee = () => {
       </div>
 
       {/* Left blur */}
-      <div className="absolute top-0 left-0 w-16 h-full bg-gradient-to-r from-white to-transparent pointer-events-none" />
+      <div
+        className={`absolute top-0 left-0 w-12 sm:w-16 h-full pointer-events-none transition-colors duration-500 ${
+          isDarkMode
+            ? "bg-gradient-to-r from-gray-900 to-transparent"
+            : "bg-gradient-to-r from-white to-transparent"
+        }`}
+      />
 
       {/* Right blur */}
-      <div className="absolute top-0 right-0 w-16 h-full bg-gradient-to-l from-white to-transparent pointer-events-none" />
+      <div
+        className={`absolute top-0 right-0 w-12 sm:w-16 h-full pointer-events-none transition-colors duration-500 ${
+          isDarkMode
+            ? "bg-gradient-to-l from-gray-900 to-transparent"
+            : "bg-gradient-to-l from-white to-transparent"
+        }`}
+      />
 
       {/* Tailwind custom animation */}
       <style>
