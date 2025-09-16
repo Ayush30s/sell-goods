@@ -69,7 +69,10 @@ const ProductDetails = () => {
       toast.error("You are not logged in.");
       return;
     }
-
+    if (user.role === "admin") {
+      toast.error("Admin accounts cannot be used for purchasing.");
+      return;
+    }
     if (alreadyAddedToCart) {
       dispatch(removeFromCartThunk(parseInt(id)));
     } else {
