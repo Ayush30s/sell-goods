@@ -9,7 +9,7 @@ const globalReducer = (state = initialState, action) => {
     case CHANGE_THEME:
       return {
         ...state,
-        theme: state.theme ? false : true,
+        theme: !state.theme,
       };
 
     default:

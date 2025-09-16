@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -9,6 +9,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useSelector } from "react-redux";
 
 ChartJS.register(
   CategoryScale,
@@ -48,7 +49,32 @@ const monthLabels = [
 ];
 
 export default function Revenue() {
+  const globalData = useSelector((store) => store.global);
+  const isDarkMode = globalData.theme;
+
   const [filter, setFilter] = useState("thisYear");
+  const [chartHeight, setChartHeight] = useState(300);
+  const [isSmallDevice, setIsSmallDevice] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const small = window.innerWidth < 640;
+      setIsSmallDevice(small);
+
+      // Chart height adapts by breakpoints
+      if (window.innerWidth < 480) {
+        setChartHeight(220);
+      } else if (window.innerWidth < 768) {
+        setChartHeight(260);
+      } else {
+        setChartHeight(360);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const selectedData = datasets[filter];
   const labels = filter === "lastQuarter" ? monthLabels.slice(-4) : monthLabels;
@@ -77,8 +103,20 @@ export default function Revenue() {
     maintainAspectRatio: false,
     plugins: { legend: { display: false } },
     scales: {
-      x: { grid: { display: false } },
-      y: { grid: { color: "#f3f4f6" } },
+      x: {
+        grid: { display: false },
+        ticks: {
+          display: !isSmallDevice,
+          font: { size: isSmallDevice ? 8 : 12 },
+        },
+      },
+      y: {
+        grid: { color: isDarkMode ? "#374151" : "#f3f4f6" },
+        ticks: {
+          display: !isSmallDevice,
+          font: { size: isSmallDevice ? 8 : 12 },
+        },
+      },
     },
   };
 
@@ -89,19 +127,27 @@ export default function Revenue() {
   ];
 
   return (
-    <div className="bg-white p-6 rounded-sm shadow-lg border border-gray-100 w-full h-full flex flex-col">
+    <div
+      className={`flex flex-col h-full overflow-auto p-4 md:p-6 rounded-sm shadow-lg border transition-colors duration-300 ${
+        isDarkMode
+          ? "bg-gray-800 border-gray-700 text-gray-100"
+          : "bg-white border-gray-200 text-gray-800"
+      }`}
+    >
       {/* Header with Filters */}
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold text-gray-800">Revenue Overview</h2>
-        <div className="flex gap-2">
+      <div className="flex flex-wrap justify-between items-center mb-4 gap-3">
+        <h2 className="text-lg md:text-xl font-semibold">Revenue Overview</h2>
+        <div className="flex gap-2 flex-wrap">
           {filters.map((f) => (
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`px-4 py-1.5 rounded-sm text-sm font-medium transition border
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition border
                 ${
                   filter === f.value
                     ? "bg-green-600 text-white border-green-600 shadow"
+                    : isDarkMode
+                    ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
                     : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
                 }`}
             >
@@ -112,29 +158,45 @@ export default function Revenue() {
       </div>
 
       {/* Insights Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-        <div className="bg-green-50 p-3 rounded-sm text-center">
-          <p className="text-xs text-gray-500">Total Revenue</p>
-          <p className="text-lg font-bold text-green-700">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+        <div
+          className={`${
+            isDarkMode ? "bg-green-900/30" : "bg-green-50"
+          } p-3 rounded-sm text-center`}
+        >
+          <p className="text-xs text-gray-500 dark:text-gray-300">
+            Total Revenue
+          </p>
+          <p className="text-lg font-bold text-green-700 dark:text-green-400">
             ${totalRevenue.toLocaleString()}
           </p>
         </div>
-        <div className="bg-blue-50 p-3 rounded-sm text-center">
-          <p className="text-xs text-gray-500">Avg / Month</p>
-          <p className="text-lg font-bold text-blue-700">
+        <div
+          className={`${
+            isDarkMode ? "bg-blue-900/30" : "bg-blue-50"
+          } p-3 rounded-sm text-center`}
+        >
+          <p className="text-xs text-gray-500 dark:text-gray-300">
+            Avg / Month
+          </p>
+          <p className="text-lg font-bold text-blue-700 dark:text-blue-400">
             ${avgRevenue.toLocaleString()}
           </p>
         </div>
-        <div className="bg-yellow-50 p-3 rounded-sm text-center">
-          <p className="text-xs text-gray-500">Best Month</p>
-          <p className="text-lg font-bold text-yellow-700">
+        <div
+          className={`${
+            isDarkMode ? "bg-yellow-900/30" : "bg-yellow-50"
+          } p-3 rounded-sm text-center`}
+        >
+          <p className="text-xs text-gray-500 dark:text-gray-300">Best Month</p>
+          <p className="text-lg font-bold text-yellow-700 dark:text-yellow-400">
             {highestMonth} (${highestValue.toLocaleString()})
           </p>
         </div>
       </div>
 
       {/* Chart */}
-      <div className="flex-1 w-full">
+      <div className="flex-1 border border-gray-500 p-2" style={{ height: `${chartHeight}px` }}>
         <Bar data={data} options={options} />
       </div>
     </div>

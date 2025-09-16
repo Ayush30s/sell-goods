@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import { useSelector } from "react-redux";
 
 ChartJS.register(
   CategoryScale,
@@ -29,7 +30,29 @@ const datasets = {
 };
 
 export default function DailyGrowth() {
+  const globalData = useSelector((store) => store.global);
+  const isDarkMode = globalData.theme;
   const [filter, setFilter] = useState("week");
+  const [isLandscape, setIsLandscape] = useState(false);
+  const [isSmallDevice, setIsSmallDevice] = useState(false);
+  const [chartHeight, setChartHeight] = useState(300);
+
+  // ✅ Handle responsive chart height & orientation
+  useEffect(() => {
+    const handleResize = () => {
+      const landscape = window.matchMedia("(orientation: landscape)").matches;
+      setIsLandscape(landscape);
+      const smallDevice = window.innerWidth < 768;
+      setIsSmallDevice(smallDevice);
+
+      // Reserve space for filters & insights
+      const reservedSpace = smallDevice ? 220 : 200;
+      setChartHeight(Math.max(180, window.innerHeight - reservedSpace));
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const selectedData = datasets[filter];
   const total = selectedData.reduce((a, b) => a + b, 0);
@@ -67,15 +90,27 @@ export default function DailyGrowth() {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: "#1f2937",
-        titleColor: "#fff",
-        bodyColor: "#e5e7eb",
-        padding: 10,
+        backgroundColor: isDarkMode
+          ? "rgba(31,41,55,0.9)"
+          : "rgba(255,255,255,0.95)",
+        titleColor: isDarkMode ? "#f9fafb" : "#111827",
+        bodyColor: isDarkMode ? "#e5e7eb" : "#374151",
+        borderColor: isDarkMode ? "#4b5563" : "#e5e7eb",
+        borderWidth: 1,
       },
     },
     scales: {
-      x: { grid: { display: false } },
-      y: { grid: { color: "#f3f4f6" } },
+      x: {
+        grid: { display: !(isSmallDevice && isLandscape) },
+        ticks: { display: !(isSmallDevice && isLandscape) },
+      },
+      y: {
+        grid: {
+          color: isDarkMode ? "#374151" : "#f3f4f6",
+          display: !(isSmallDevice && isLandscape),
+        },
+        ticks: { display: !(isSmallDevice && isLandscape) },
+      },
     },
   };
 
@@ -86,21 +121,28 @@ export default function DailyGrowth() {
   ];
 
   return (
-    <div className="bg-white p-6 rounded-sm shadow-lg border border-gray-100 w-full h-full flex flex-col">
+    <div
+      className={`flex flex-col h-full overflow-hidden p-4 md:p-6 rounded-sm shadow-lg border transition-colors duration-300 ${
+        isDarkMode
+          ? "bg-gray-800 border-gray-700 text-gray-100"
+          : "bg-white border-gray-200 text-gray-800"
+      }`}
+    >
       {/* Header with Filters */}
-      <div className="flex justify-between items-center mb-10">
-        <h2 className="text-xl font-bold text-gray-800">Daily Growth</h2>
+      <div className="flex justify-between items-center mb-6 flex-wrap gap-3">
+        <h2 className="text-lg md:text-xl font-semibold">Daily Growth</h2>
         <div className="flex gap-2">
           {filters.map((f) => (
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`px-4 py-1.5 rounded-sm text-sm font-medium transition border
-                ${
-                  filter === f.value
-                    ? "bg-purple-600 text-white border-purple-600 shadow"
-                    : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
-                }`}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition border ${
+                filter === f.value
+                  ? "bg-purple-600 text-white border-purple-600 shadow"
+                  : isDarkMode
+                  ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
+                  : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+              }`}
             >
               {f.label}
             </button>
@@ -109,25 +151,53 @@ export default function DailyGrowth() {
       </div>
 
       {/* Insights Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-        <div className="bg-purple-50 p-3 rounded-sm text-center">
-          <p className="text-xs text-gray-500">Total Growth</p>
-          <p className="text-lg font-bold text-purple-700">{total}</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+        <div
+          className={`p-3 rounded-md text-center ${
+            isDarkMode ? "bg-purple-900/30" : "bg-purple-100"
+          }`}
+        >
+          <p className="text-xs text-gray-500 dark:text-gray-300">
+            Total Growth
+          </p>
+          <p className="text-lg font-bold text-purple-700 dark:text-purple-400">
+            {total}
+          </p>
         </div>
-        <div className="bg-blue-50 p-3 rounded-sm text-center">
-          <p className="text-xs text-gray-500">Average Daily</p>
-          <p className="text-lg font-bold text-blue-700">{avg}</p>
+
+        <div
+          className={`p-3 rounded-md text-center ${
+            isDarkMode ? "bg-blue-900/30" : "bg-blue-50"
+          }`}
+        >
+          <p className="text-xs text-gray-500 dark:text-gray-300">
+            Average Daily
+          </p>
+          <p className="text-lg font-bold text-blue-700 dark:text-blue-400">
+            {avg}
+          </p>
         </div>
+
         {compareWithLastWeek && (
           <div
-            className={`p-3 rounded-sm text-center ${
-              compareWithLastWeek >= 0 ? "bg-green-50" : "bg-red-50"
+            className={`p-3 rounded-md text-center ${
+              compareWithLastWeek >= 0
+                ? isDarkMode
+                  ? "bg-green-900/30"
+                  : "bg-green-50"
+                : isDarkMode
+                ? "bg-red-900/30"
+                : "bg-red-50"
             }`}
           >
-            <p className="text-xs text-gray-500">vs Last Week</p>
+            <p className="text-xs text-gray-500 dark:text-gray-300">
+              vs Last Week
+            </p>
             <p
               className={`text-lg font-bold ${
-                compareWithLastWeek >= 0 ? "text-green-700" : "text-red-700"
+                compareWithLastWeek >= 0
+                  ? "text-green-700 dark:text-green-400"
+                  : "text-red-700 dark:text-red-400"
               }`}
             >
               {compareWithLastWeek >= 0 ? "+" : ""}
@@ -138,7 +208,10 @@ export default function DailyGrowth() {
       </div>
 
       {/* Chart */}
-      <div className="flex-1 w-full">
+      <div
+        className="flex-1 border border-gray-500 p-2 w-full"
+        style={{ height: `${chartHeight}px` }}
+      >
         <Line data={data} options={options} />
       </div>
     </div>

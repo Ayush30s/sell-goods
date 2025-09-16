@@ -23,6 +23,7 @@ import Revenue from "./pages/Admin/revenue.jsx";
 import MostSoldProducts from "./pages/Admin/mostSoldproducts.jsx";
 import ProtectedRoute from "./guards/roleProtectedRoute.jsx";
 import Register from "./pages/auth/RegisterPage.jsx";
+// import LandscapeOnly from "./guards/landscapeViewOnly.jsx";
 
 // Router
 const appRouter = createBrowserRouter([
