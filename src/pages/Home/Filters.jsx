@@ -45,7 +45,7 @@ const FilterBar = ({ applyFilters }) => {
 
   return (
     <div
-      className={`shadow-sm shadow-gray-800 rounded-sm p-6 mb-8 mx-auto transition-colors duration-300 ${
+      className={`shadow-lg rounded-sm p-6 mb-8 mx-auto transition-colors duration-300 ${
         isDarkMode ? "bg-gray-900 text-gray-200" : "bg-white text-gray-800"
       }`}
     >
