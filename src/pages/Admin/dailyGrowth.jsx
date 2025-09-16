@@ -26,12 +26,13 @@ ChartJS.register(
 const datasets = {
   week: [120, 200, 150, 300, 250, 400, 350],
   lastWeek: [100, 180, 130, 280, 220, 360, 300],
-  month: [500, 600, 750, 800, 900, 950, 1000],
+  month: [500, 600, 750, 800, 900, 950, 1000, 1100, 1200, 1300, 1250, 1400],
 };
 
 export default function DailyGrowth() {
   const globalData = useSelector((store) => store.global);
   const isDarkMode = globalData.theme;
+
   const [filter, setFilter] = useState("week");
   const [isLandscape, setIsLandscape] = useState(false);
   const [isSmallDevice, setIsSmallDevice] = useState(false);
@@ -55,6 +56,19 @@ export default function DailyGrowth() {
   }, []);
 
   const selectedData = datasets[filter];
+
+  // Generate labels based on filter
+  let labels = [];
+  if (filter === "week" || filter === "lastWeek") {
+    labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  } else if (filter === "month") {
+    labels = Array.from(
+      { length: datasets.month.length },
+      (_, i) => `${i + 1}` // Day numbers
+    );
+  }
+
+  // Insights
   const total = selectedData.reduce((a, b) => a + b, 0);
   const avg = (total / selectedData.length).toFixed(1);
 
@@ -69,7 +83,7 @@ export default function DailyGrowth() {
       : null;
 
   const data = {
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    labels,
     datasets: [
       {
         label: "Daily Growth",
@@ -97,6 +111,13 @@ export default function DailyGrowth() {
         bodyColor: isDarkMode ? "#e5e7eb" : "#374151",
         borderColor: isDarkMode ? "#4b5563" : "#e5e7eb",
         borderWidth: 1,
+        callbacks: {
+          title: (tooltipItems) => {
+            const index = tooltipItems[0].dataIndex;
+            if (filter === "month") return `Day ${index + 1}`;
+            return tooltipItems[0].label;
+          },
+        },
       },
     },
     scales: {
@@ -208,10 +229,7 @@ export default function DailyGrowth() {
       </div>
 
       {/* Chart */}
-      <div
-        className="flex-1 w-full"
-        style={{ height: `${chartHeight}px` }}
-      >
+      <div className="flex-1 w-full" style={{ height: `${chartHeight}px` }}>
         <Line data={data} options={options} />
       </div>
     </div>

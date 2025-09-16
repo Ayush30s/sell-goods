@@ -180,21 +180,21 @@ export default function Orders() {
       </div>
 
       {/* Header with Filters */}
-      <div className="flex flex-wrap justify-between items-center mb-4 gap-3">
+      <div className="flex flex-wrap justify-between items-center mb-4 gap-2">
         <h2 className="text-lg md:text-xl font-semibold">Recent Orders</h2>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-1 md:gap-2">
           {filters.map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition border 
-                ${
-                  filter === f
-                    ? "bg-purple-600 text-white border-purple-600 shadow"
-                    : isDarkMode
-                    ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
-                    : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
-                }`}
+              className={`px-3 py-1 md:px-4 md:py-1.5 rounded-md text-sm md:text-base  md:text-sm font-medium transition border 
+          ${
+            filter === f
+              ? "bg-purple-600 text-white border-purple-600 shadow"
+              : isDarkMode
+              ? "bg-gray-700 text-gray-200 border-gray-600 hover:bg-gray-600"
+              : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"
+          }`}
             >
               {f}
             </button>

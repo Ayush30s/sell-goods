@@ -142,7 +142,7 @@ export default function Revenue() {
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`px-3 py-1.5 rounded-md text-sm font-medium transition border
+              className={`px-3 py-1.5 rounded-md text-xs font-medium transition border
                 ${
                   filter === f.value
                     ? "bg-green-600 text-white border-green-600 shadow"

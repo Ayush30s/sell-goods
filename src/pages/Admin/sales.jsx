@@ -147,7 +147,7 @@ export default function Sales() {
             <button
               key={f.value}
               onClick={() => setFilter(f.value)}
-              className={`px-3 md:px-4 py-1.5 rounded-md text-sm font-medium transition border
+              className={`px-3 md:px-4 py-1.5 rounded-md text-sm md:text-base font-medium transition border
                 ${
                   filter === f.value
                     ? "bg-purple-600 text-white border-purple-600 shadow"
