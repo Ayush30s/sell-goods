@@ -201,7 +201,7 @@ export default function Sales() {
       </div>
 
       {/* Chart */}
-      <div className="flex-1 w-full p-2 border border-gray-500" style={{ height: `${chartHeight}px` }}>
+      <div className="flex-1 w-full" style={{ height: `${chartHeight}px` }}>
         <Bar data={data} options={options} />
       </div>
     </div>

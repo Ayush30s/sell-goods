@@ -209,7 +209,7 @@ export default function DailyGrowth() {
 
       {/* Chart */}
       <div
-        className="flex-1 border border-gray-500 p-2 w-full"
+        className="flex-1 w-full"
         style={{ height: `${chartHeight}px` }}
       >
         <Line data={data} options={options} />

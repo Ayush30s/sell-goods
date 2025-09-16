@@ -216,7 +216,7 @@ export default function MostSoldProducts() {
       </div>
 
       {/* Chart */}
-      <div className="border border-gray-500 p-2">
+      <div>
         <p className="text-xs md:text-sm text-gray-500 mb-4">
           Units Sold per Product – {displayedProducts.length} products shown
         </p>
