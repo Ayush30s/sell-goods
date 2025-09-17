@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import FilterBar from "../Home/Filters";
 import Product from "./ProductCard";
 import Footer from "../../components/Footer";
+import SearchBar from "./Search";
 import { useSelector } from "react-redux";
 
 const AllProducts = () => {
@@ -21,6 +22,7 @@ const AllProducts = () => {
     returnable: false,
   });
   const [showFilters, setShowFilters] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const fetchProducts = async () => {
     try {
@@ -48,6 +50,10 @@ const AllProducts = () => {
     setFilters(appliedFilters);
   };
 
+  const handleSearch = (query) => {
+    setSearchQuery(query.toLowerCase());
+  };
+
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -55,26 +61,27 @@ const AllProducts = () => {
   useEffect(() => {
     let tempProducts = [...allProducts];
 
-    if (filters.category) {
+    // Apply filters
+    if (filters?.category) {
       tempProducts = tempProducts.filter(
         (p) => p.category === filters.category
       );
     }
 
-    if (filters.subcategory) {
+    if (filters?.subcategory) {
       tempProducts = tempProducts.filter(
-        (p) => p.subcategory === filters.subcategory
+        (p) => p.subcategory === filters?.subcategory
       );
     }
 
     tempProducts = tempProducts.filter(
       (p) =>
-        p.price >= filters.priceRange[0] && p.price <= filters.priceRange[1]
+        p.price >= filters?.priceRange[0] && p.price <= filters?.priceRange[1]
     );
 
-    if (filters.discount) {
+    if (filters?.discount) {
       tempProducts = tempProducts.filter(
-        (p) => p.discount >= Number(filters.discount)
+        (p) => p.discount >= Number(filters?.discount)
       );
     }
 
@@ -92,30 +99,42 @@ const AllProducts = () => {
       tempProducts = tempProducts.filter((p) => p.returnable);
     }
 
+    // Apply search
+    if (searchQuery) {
+      tempProducts = tempProducts.filter(
+        (p) =>
+          p.title.toLowerCase().includes(searchQuery) ||
+          p.subcategory.toLowerCase().includes(searchQuery)
+      );
+    }
+
     setFilteredProducts(tempProducts);
-  }, [filters, allProducts]);
+  }, [filters, allProducts, searchQuery]);
 
   return (
     <>
       <section
-        className={`transition-colors duration-300 p-5 min-h-screen ${
+        className={`transition-colors mx-auto duration-300 p-5 min-h-screen ${
           isDarkMode ? "bg-gray-900 text-gray-200" : "bg-white text-gray-800"
         }`}
       >
-        <div className="container mx-auto">
+        <div className="container max-w-7xl mx-auto">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+          {/* Header */}
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between mb-6 gap-4">
             <h1 className="text-2xl sm:text-3xl font-bold">All Products</h1>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={`px-4 py-2 rounded-md font-medium transition ${
-                isDarkMode
-                  ? "bg-green-600 text-white hover:bg-green-700"
-                  : "bg-green-600 text-white hover:bg-green-700"
-              }`}
-            >
-              {showFilters ? "Hide Filters" : "Show Filters"}
-            </button>
+
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full lg:w-auto">
+              {/* ✅ SearchBar added */}
+              <SearchBar onSearch={handleSearch} />
+
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="px-4 py-2 rounded-md font-medium transition bg-green-600 text-white hover:bg-green-700"
+              >
+                {showFilters ? "Hide Filters" : "Show Filters"}
+              </button>
+            </div>
           </div>
 
           {/* Filters */}
@@ -128,25 +147,31 @@ const AllProducts = () => {
           {/* Product Grid */}
           <div
             className="
-    grid
-    grid-cols-1
-    sm:grid-cols-2
-    md:grid-cols-3
-    lg:grid-cols-4
-    xl:grid-cols-5
-    gap-6
-    place-items-center
-  "
+              grid
+              grid-cols-1
+              sm:grid-cols-2
+              md:grid-cols-2
+              lg:grid-cols-4
+              xl:grid-cols-4
+              gap-6
+              sm:gap-8
+              lg:gap-10
+              place-items-center
+            "
           >
             {filteredProducts.length > 0 ? (
               filteredProducts.map((product) => (
-                <Link key={product.id} to={`/products/${product.id}`}>
+                <Link
+                  key={product.id}
+                  to={`/products/${product.id}`}
+                  className="w-full"
+                >
                   <Product product={product} />
                 </Link>
               ))
             ) : (
               <p className="col-span-full text-center text-gray-500 mt-12">
-                No products match the selected filters.
+                No products match your search or filters.
               </p>
             )}
           </div>

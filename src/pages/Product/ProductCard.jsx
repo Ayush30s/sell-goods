@@ -15,18 +15,23 @@ const Product = ({ product }) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       if (rating >= i) {
-        stars.push(<FaStar key={i} className="text-green-500 text-sm" />);
+        stars.push(
+          <FaStar key={i} className="text-green-500 text-xs sm:text-sm" />
+        );
       } else if (rating >= i - 0.5) {
         stars.push(
-          <FaStarHalfAlt key={i} className="text-green-500 text-sm" />
+          <FaStarHalfAlt
+            key={i}
+            className="text-green-500 text-xs sm:text-sm"
+          />
         );
       } else {
         stars.push(
           <FaRegStar
             key={i}
-            className={
-              isDarkMode ? "text-gray-600 text-sm" : "text-gray-300 text-sm"
-            }
+            className={`text-xs sm:text-sm ${
+              isDarkMode ? "text-gray-600" : "text-gray-300"
+            }`}
           />
         );
       }
@@ -34,64 +39,67 @@ const Product = ({ product }) => {
     return stars;
   };
 
+  console.log(product)
+
   return (
     <div
-      className={`transition flex flex-col justify-between mb-10 w-[250px]`}
+      className={`
+        flex flex-col justify-between w-full h-full
+        border  ${
+          isDarkMode ? "border-gray-700" : "border-gray-200"
+        } p-2 rounded-lg 
+        transition transform hover:scale-[1.02]
+      `}
     >
       {/* Product Image */}
       <div
-        className={`relative rounded-md h-60 sm:h-64 md:h-72 flex justify-center items-center shadow-sm
-          ${isDarkMode ? "bg-gray-800" : "bg-[#F5F5F5]"}`}
+        className={`relative rounded-md 
+          h-40 sm:h-48 md:h-56 lg:h-64
+          flex justify-center items-center shadow-sm
+          ${isDarkMode ? "bg-gray-800" : "bg-[#F5F5F5]"}
+        `}
       >
         <img
           src={product.thumbnail}
           alt={product.title}
-          className="object-contain p-4 max-h-full transform transition-transform duration-200 ease-in hover:scale-105"
+          className="object-contain p-4 max-h-full w-auto transition-transform duration-200 ease-in hover:scale-105"
         />
         {discount > 0 && (
-          <span className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded">
+          <span className="absolute top-2 left-2 bg-red-600 text-white text-xs sm:text-sm font-bold px-2 py-0.5 rounded">
             -{discount}%
           </span>
         )}
       </div>
 
       {/* Product Info */}
-      <div className="mt-3 flex flex-col gap-1">
-        {/* Name and Stock Row */}
-        <div className="flex flex-col sm:flex-col md:flex-col lg:flex-col gap-1">
-          <div className="flex justify-between items-center">
-            <h3
-              className={`text-sm font-medium line-clamp-2 ${
-                isDarkMode ? "text-gray-100" : "text-gray-800"
-              }`}
-            >
-              {product.title}
-            </h3>
-            {/* Stock on mobile: flex-row */}
-            <p
-              className={`text-xs font-medium ${
-                stock > 0 ? "text-green-600" : "text-red-500"
-              } sm:hidden`}
-            >
-              {stock > 0 ? `In Stock: ${stock}` : "Out of Stock"}
-            </p>
-          </div>
+      <div className="mt-3 flex flex-col gap-1 flex-grow">
+        {/* Title & Stock */}
+        <div className="flex flex-col gap-1">
+          <h3
+            className={`truncate font-medium ${
+              isDarkMode ? "text-gray-100" : "text-gray-800"
+            } text-sm sm:text-base`}
+            title={product.title} // Tooltip shows full name on hover
+          >
+            {product.title}
+          </h3>
 
-          {/* Stock for larger screens */}
           <p
-            className={`text-xs font-medium ${
+            className={`text-xs sm:text-sm font-medium ${
               stock > 0 ? "text-green-600" : "text-red-500"
-            } hidden sm:block`}
+            }`}
           >
             {stock > 0 ? `In Stock: ${stock}` : "Out of Stock"}
           </p>
         </div>
 
         {/* Rating & Price */}
-        <div className="flex items-center justify-between mt-1">
-          <div className="flex items-center gap-1">{renderStars()}</div>
+        <div className="flex items-center justify-between mt-2">
+          <div className="flex items-center gap-0.5 sm:gap-1">
+            {renderStars()}
+          </div>
           <p
-            className={`text-sm font-semibold ${
+            className={`text-sm sm:text-base font-semibold ${
               isDarkMode ? "text-gray-200" : "text-gray-700"
             }`}
           >

@@ -47,26 +47,20 @@ const BestSellingProducts = () => {
 
   return (
     <section
-      className={`relative container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 my-20 transition-colors duration-500  ${
-        isDarkMode ? "bg-gray-900" : "bg-gray-50"
-      }`}
+      className={`relative container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 my-16 transition-colors duration-500`}
     >
       {/* Section Title */}
-      <div className="text-center mb-10">
-        <h2
-          className={`text-3xl font-bold ${
-            isDarkMode ? "text-white" : "text-gray-900"
-          }`}
-        >
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-bold">
           Best <span className="text-green-600">Selling</span> Products
         </h2>
-        <p className={`mt-2 ${isDarkMode ? "text-gray-300" : "text-gray-600"}`}>
+        <p className={`mt-2 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
           Our most popular products customers love
         </p>
       </div>
 
       {/* View More Button */}
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-4">
         <Link
           to="/products"
           state={{ from: "homepage", promo: true, tab: "BestSelling" }}
@@ -84,14 +78,30 @@ const BestSellingProducts = () => {
         </Link>
       </div>
 
-      {/* Products Grid */}
-      <div className="flex flex-row overflow-auto justify-between gap-12">
+      {/* Products Horizontal Scroll */}
+      <div
+        className="flex gap-6 overflow-x-auto pb-4 scroll-smooth"
+        style={{ scrollbarWidth: "thin" }}
+      >
         {products.map((product) => (
-          <Link key={product.id} to={`/products/${product.id}`}>
+          <Link
+            key={product.id}
+            to={`/products/${product.id}`}
+            className="min-w-[220px] sm:min-w-[250px] md:min-w-[280px] flex-shrink-0"
+          >
             <Product product={product} />
           </Link>
         ))}
       </div>
+
+      {/* Scroll Hint */}
+      <p
+        className={`text-xs mt-3 text-center ${
+          isDarkMode ? "text-gray-500" : "text-gray-400"
+        }`}
+      >
+        👉 Scroll left & right to see more products
+      </p>
     </section>
   );
 };

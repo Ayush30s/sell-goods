@@ -38,24 +38,25 @@ const FilterBar = ({ applyFilters }) => {
     applyFilters({});
   };
 
-  const baseInputClasses = `w-full text-base px-4 py-2 rounded-sm border focus:ring-2 focus:ring-green-400 focus:border-green-400 transition`;
+  // Base style: no border, rounded, background highlight
+  const baseInputClasses = `w-full text-base px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400 transition`;
   const themedInputClasses = isDarkMode
-    ? "bg-gray-800 border-gray-600 text-gray-200 placeholder-gray-400"
-    : "bg-white border-gray-300 text-gray-800 placeholder-gray-500";
+    ? "bg-gray-900 text-gray-200 placeholder-gray-400 focus:bg-gray-700"
+    : "bg-gray-100 text-gray-800 placeholder-gray-500 focus:bg-gray-100";
 
   return (
     <div
-      className={`shadow-lg rounded-sm p-6 mb-8 mx-auto transition-colors duration-300 ${
-        isDarkMode ? "bg-gray-900 text-gray-200" : "bg-white text-gray-800"
+      className={`shadow-lg rounded-lg p-6 mb-8 mx-auto transition-colors duration-300 ${
+        isDarkMode ? "bg-gray-800 text-gray-200" : "bg-gray-50 text-gray-800"
       }`}
     >
-      <form onSubmit={handleApply} className="space-y-4">
+      <form onSubmit={handleApply} className="space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Category */}
           <div>
             <label
               htmlFor="category"
-              className="block text-base font-medium mb-2"
+              className="block text-sm font-medium mb-2"
             >
               Category
             </label>
@@ -70,7 +71,7 @@ const FilterBar = ({ applyFilters }) => {
               className={`${baseInputClasses} ${themedInputClasses}`}
             >
               <option value="">Select Category</option>
-              {rawCategories.map((cat) => (
+              {rawCategories?.map((cat) => (
                 <option key={cat.name} value={cat.name}>
                   {cat.name}
                 </option>
@@ -82,7 +83,7 @@ const FilterBar = ({ applyFilters }) => {
           <div>
             <label
               htmlFor="subcategory"
-              className="block text-base font-medium mb-2"
+              className="block text-sm font-medium mb-2"
             >
               Subcategory
             </label>
@@ -98,7 +99,7 @@ const FilterBar = ({ applyFilters }) => {
               {selectedCategory &&
                 rawCategories
                   .find((cat) => cat.name === selectedCategory)
-                  .subcategories.map((sub) => (
+                  .subcategories?.map((sub) => (
                     <option key={sub} value={sub}>
                       {sub}
                     </option>
@@ -110,7 +111,7 @@ const FilterBar = ({ applyFilters }) => {
           <div>
             <label
               htmlFor="minPrice"
-              className="block text-base font-medium mb-2"
+              className="block text-sm font-medium mb-2"
             >
               Min Price ($)
             </label>
@@ -131,7 +132,7 @@ const FilterBar = ({ applyFilters }) => {
           <div>
             <label
               htmlFor="maxPrice"
-              className="block text-base font-medium mb-2"
+              className="block text-sm font-medium mb-2"
             >
               Max Price ($)
             </label>
@@ -152,7 +153,7 @@ const FilterBar = ({ applyFilters }) => {
           <div>
             <label
               htmlFor="discount"
-              className="block text-base font-medium mb-2"
+              className="block text-sm font-medium mb-2"
             >
               Discount
             </label>
@@ -172,10 +173,7 @@ const FilterBar = ({ applyFilters }) => {
 
           {/* Rating */}
           <div>
-            <label
-              htmlFor="rating"
-              className="block text-base font-medium mb-2"
-            >
+            <label htmlFor="rating" className="block text-sm font-medium mb-2">
               Rating
             </label>
             <select
@@ -194,7 +192,7 @@ const FilterBar = ({ applyFilters }) => {
           </div>
 
           {/* Free Shipping */}
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-2 mt-6">
             <input
               type="checkbox"
               checked={freeShipping}
@@ -202,13 +200,13 @@ const FilterBar = ({ applyFilters }) => {
               className="accent-green-500 h-4 w-4"
               id="freeShipping"
             />
-            <label htmlFor="freeShipping" className="text-base">
+            <label htmlFor="freeShipping" className="text-sm">
               Free Shipping
             </label>
           </div>
 
           {/* Returnable */}
-          <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-2 mt-6">
             <input
               type="checkbox"
               checked={returnable}
@@ -216,7 +214,7 @@ const FilterBar = ({ applyFilters }) => {
               className="accent-green-500 h-4 w-4"
               id="returnable"
             />
-            <label htmlFor="returnable" className="text-base">
+            <label htmlFor="returnable" className="text-sm">
               Returnable
             </label>
           </div>
@@ -226,14 +224,14 @@ const FilterBar = ({ applyFilters }) => {
         <div className="flex flex-wrap gap-4 pt-4">
           <button
             type="submit"
-            className="px-6 py-3 text-base bg-green-600 text-white rounded-sm hover:bg-green-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="px-6 py-3 text-base bg-green-600 text-white rounded-md hover:bg-green-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-green-400"
           >
             Apply Filters
           </button>
           <button
             type="button"
             onClick={handleReset}
-            className={`px-6 py-3 text-base rounded-sm transition duration-300 focus:outline-none focus:ring-2 ${
+            className={`px-6 py-3 text-base rounded-md transition duration-300 focus:outline-none focus:ring-2 ${
               isDarkMode
                 ? "bg-gray-700 text-gray-200 hover:bg-gray-600 focus:ring-gray-500"
                 : "bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400"

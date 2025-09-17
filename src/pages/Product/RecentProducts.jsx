@@ -55,8 +55,8 @@ const LatestProducts = () => {
       }`}
     >
       {/* Section Title */}
-      <div className="text-center mb-10">
-        <h2 className={`text-3xl font-bold`}>
+      <div className="text-center mb-6">
+        <h2 className="text-3xl font-bold">
           Most <span className="text-green-600">Recent</span> Products
         </h2>
         <p className={`mt-2 ${isDarkMode ? "text-gray-400" : "text-gray-600"}`}>
@@ -65,29 +65,48 @@ const LatestProducts = () => {
       </div>
 
       {/* "View More" button */}
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-4">
         <Link
           to="/products"
           state={{ from: "homepage", promo: true, tab: "Latest" }}
         >
           <button
-            className={`flex items-center text-sm px-2 py-1 rounded hover:underline transition ${
-              isDarkMode ? "text-gray-300" : "text-gray-700"
+            className={`flex items-center text-sm px-3 py-2 rounded-md font-medium transition ${
+              isDarkMode
+                ? "text-gray-300 hover:text-white"
+                : "text-gray-700 hover:text-gray-900"
             }`}
           >
-            View More <ArrowRight size={14} className="ml-1" />
+            <span>View More</span>
+            <ArrowRight size={14} className="ml-1" />
           </button>
         </Link>
       </div>
 
-      {/* Products Grid */}
-      <div className="flex flex-row justify-between overflow-auto gap-12">
+      {/* Products Horizontal Scroll */}
+      <div
+        className="flex gap-6 overflow-x-auto pb-4 scroll-smooth"
+        style={{ scrollbarWidth: "thin" }}
+      >
         {products.map((product) => (
-          <Link key={product.id} to={`/products/${product.id}`}>
+          <Link
+            key={product.id}
+            to={`/products/${product.id}`}
+            className="min-w-[220px] sm:min-w-[250px] md:min-w-[280px] flex-shrink-0"
+          >
             <Product product={product} />
           </Link>
         ))}
       </div>
+
+      {/* Small hint for users */}
+      <p
+        className={`text-xs mt-3 text-center ${
+          isDarkMode ? "text-gray-500" : "text-gray-400"
+        }`}
+      >
+        👉 Scroll left & right to see more products
+      </p>
     </section>
   );
 };
