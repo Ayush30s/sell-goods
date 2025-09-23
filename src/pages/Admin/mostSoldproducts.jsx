@@ -129,7 +129,7 @@ export default function MostSoldProducts() {
 
   return (
     <div
-      className={`flex flex-col h-full overflow-y-auto p-3 md:p-6 rounded-sm shadow-lg border transition-colors duration-300
+      className={`flex flex-col overflow-y-auto p-3 md:p-6 rounded-sm shadow-lg border transition-colors duration-300
         ${
           isDarkMode
             ? "bg-gray-800 border-gray-700 text-gray-100"
